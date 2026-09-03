@@ -1,0 +1,17 @@
+pkgname=specstory-cli-bin
+pkgver=2.10.0
+pkgrel=1
+pkgdesc="A claude code wrapper that saves your conversation history to markdown"
+arch=('x86_64' 'aarch64')
+url="https://github.com/specstoryai/getspecstory"
+license=('unknown')
+provides=('specstory')
+conflicts=('specstory')
+source_x86_64=("${url}/releases/download/v${pkgver}/SpecStoryCLI_Linux_x86_64.tar.gz")
+source_aarch64=("${url}/releases/download/v${pkgver}/SpecStoryCLI_Linux_arm64.tar.gz")
+sha256sums_x86_64=('b569fda2393d253cf0af7093553e020a6406e43ef464160474ef98f6541eabbf')
+sha256sums_aarch64=('09efe66989ed1858a26f27debf0ff736337411c9fe4fb747d4b47ea69eb2bd17')
+
+package() {
+  install -Dm755 "${srcdir}/specstory" "${pkgdir}/usr/bin/specstory"
+}
