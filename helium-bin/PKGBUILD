@@ -1,0 +1,27 @@
+pkgname=helium-bin
+pkgver=0.16.4.1
+pkgrel=1
+pkgdesc="A lightweight chromium derivative"
+arch=('x86_64' 'aarch64')
+url="https://github.com/imputnet/helium-linux"
+license=('BSD-3-Clause')
+options=('!strip')
+source_x86_64=("https://github.com/imputnet/helium-linux/releases/download/${pkgver}/helium-${pkgver}-x86_64_linux.tar.xz")
+source_aarch64=("https://github.com/imputnet/helium-linux/releases/download/${pkgver}/helium-${pkgver}-aarch64_linux.tar.xz")
+sha256sums_x86_64=('683edba74ab8f6ae0ac7272a3c27f9ef945690629e1525370887b17815cedcbe')
+sha256sums_aarch64=('0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5')
+
+package() {
+    # Determine the arch string used in the source directory name
+    local srcarch="${CARCH}"
+    
+    install -d "$pkgdir/opt/helium"
+    cp -r "$srcdir/helium-${pkgver}-${srcarch}_linux/"* "$pkgdir/opt/helium/"
+    
+    install -d "$pkgdir/usr/bin"
+    ln -s /opt/helium/helium-wrapper "$pkgdir/usr/bin/helium"
+    
+    # Install desktop file and icon
+    install -D -m644 "$pkgdir/opt/helium/helium.desktop" "$pkgdir/usr/share/applications/helium.desktop"
+    install -D -m644 "$pkgdir/opt/helium/product_logo_256.png" "$pkgdir/usr/share/pixmaps/helium.png"
+}
