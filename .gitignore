@@ -3,3 +3,4 @@ src/
 *.pkg.tar.zst
 *.tar.gz
 *.tgz
+.specstory/
