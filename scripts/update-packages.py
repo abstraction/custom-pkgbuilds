@@ -9,15 +9,16 @@ import hashlib
 import base64
 
 def get_base_branch():
-    res = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
-    branch = res.stdout.strip()
-    if branch and branch != "HEAD":
-        return branch
     for candidate in ["master", "main"]:
-        r = subprocess.run(["git", "show-ref", "--verify", f"refs/heads/{candidate}"], capture_output=True)
+        r = subprocess.run(["git", "show-ref", "--verify", f"refs/remotes/origin/{candidate}"], capture_output=True)
         if r.returncode == 0:
             return candidate
+        r_local = subprocess.run(["git", "show-ref", "--verify", f"refs/heads/{candidate}"], capture_output=True)
+        if r_local.returncode == 0:
+            return candidate
     return "master"
+
+BASE_BRANCH = get_base_branch()
 
 def get_sha256_stream(url):
     print(f"Streaming {url} for SHA256 calculation...")
@@ -170,7 +171,6 @@ def update_helium():
     return latest_ver, release_data.get("body", "No release notes provided.")
 
 def create_pr(pkg_name, new_ver, notes):
-    base_branch = get_base_branch()
     branch_name = f"update-{pkg_name}-{new_ver}"
 
     try:
@@ -183,13 +183,14 @@ def create_pr(pkg_name, new_ver, notes):
     except Exception as e:
         print(f"Warning checking existing PRs: {e}")
     
-    subprocess.run(["git", "checkout", base_branch], check=True)
+    subprocess.run(["git", "checkout", BASE_BRANCH], check=True)
+    subprocess.run(["git", "pull", "origin", BASE_BRANCH], check=False)
     
     try:
-        subprocess.run(["git", "checkout", "-B", branch_name], check=True)
+        subprocess.run(["git", "checkout", "-B", branch_name, BASE_BRANCH], check=True)
     except subprocess.CalledProcessError:
         print(f"Failed to switch to branch {branch_name}. Skipping PR creation.")
-        subprocess.run(["git", "checkout", base_branch], check=True)
+        subprocess.run(["git", "checkout", BASE_BRANCH], check=True)
         return
 
     subprocess.run(["git", "add", f"{pkg_name}/PKGBUILD"], check=True)
@@ -214,8 +215,12 @@ def create_pr(pkg_name, new_ver, notes):
 **Merge this PR to update {pkg_name}.**
 """
     
-    subprocess.run(["gh", "pr", "create", "--base", base_branch, "--title", commit_msg, "--body", pr_body], check=True)
-    subprocess.run(["git", "checkout", base_branch], check=True)
+    res = subprocess.run(["gh", "pr", "create", "--base", BASE_BRANCH, "--title", commit_msg, "--body", pr_body], capture_output=True, text=True)
+    if res.returncode != 0:
+        print(f"gh pr create failed for {pkg_name}: {res.stderr.strip()}")
+    else:
+        print(f"Created PR for {pkg_name}: {res.stdout.strip()}")
+    subprocess.run(["git", "checkout", BASE_BRANCH], check=True)
 
 if __name__ == "__main__":
     updates = []
