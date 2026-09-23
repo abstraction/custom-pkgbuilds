@@ -2,7 +2,7 @@ name: Update PKGBUILDs
 
 on:
   schedule:
-    - cron: '0 2 * * *' # Run at 2 AM every day
+    - cron: '0 2 * * 0' # Run at 2 AM every Sunday
   workflow_dispatch: # Allow manual triggering
 
 jobs:
