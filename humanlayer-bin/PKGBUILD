@@ -1,12 +1,12 @@
 pkgname=humanlayer-bin
-pkgver=0.31.119
+pkgver=0.31.173
 pkgrel=1
 pkgdesc="HumanLayer CLI — daemon management and authentication"
 arch=('x86_64')
 url="https://docs.humanlayer.com"
 license=('Proprietary')
 source=("https://registry.npmjs.org/@humanlayer/cli-linux-x64/-/cli-linux-x64-${pkgver}.tgz")
-sha256sums=('0ee60df39a277fb1969c47d3ef38e6d46f5fe1b17a7b48520c69bdea79d9d5db')
+sha512sums=('101d1c9013416c956b82e6645766f32d8628b66c72ddf3baaeaabb3672d3cab8261702e89cae01e91cfcc45ef07c3da97049b47edd0c3aaa4edacc2ca3de5be0')
 options=('!strip')
 package() {
     # The tarball extracts into a directory named 'package'
