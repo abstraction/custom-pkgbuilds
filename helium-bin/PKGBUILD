@@ -1,5 +1,5 @@
 pkgname=helium-bin
-pkgver=0.17.2.1
+pkgver=0.19.4.1
 pkgrel=1
 pkgdesc="A lightweight chromium derivative"
 arch=('x86_64' 'aarch64')
@@ -8,8 +8,8 @@ license=('BSD-3-Clause')
 options=('!strip')
 source_x86_64=("https://github.com/imputnet/helium-linux/releases/download/${pkgver}/helium-${pkgver}-x86_64_linux.tar.xz")
 source_aarch64=("https://github.com/imputnet/helium-linux/releases/download/${pkgver}/helium-${pkgver}-arm64_linux.tar.xz")
-sha256sums_x86_64=('2a639df54e3d05f413cfbb4622a4d1a68584b31da5a7aaf58ee3cd83c7c3e299')
-sha256sums_aarch64=('e96629974b88b87f2928f36777313d6aa4f29b8b80d8cc7839fa7ee91786ed1d')
+sha256sums_x86_64=('6ca6e4a00fef5916821fb1af8a9607cc6b386f678a7eb422e55f19116ba30469')
+sha256sums_aarch64=('63137674429e2f94bb03b65b254de0af3f6440a95ea6067a4d7c0cd63ac9cf96')
 
 package() {
     # Determine the arch string used in the source directory name
